@@ -8,22 +8,30 @@ import { normalizePath } from "../../utils/get-url-path"
 
 function BlogPost({ data }) {
   const { nextPage, previousPage, page } = data
-  const { title, content, featuredImage } = page
+  const { title, content, featuredImage, author } = page
 
   return (
     <Layout>
       <Heading as="h1" size="xl" mb={5}>
         {title}
       </Heading>
-
-      {!!featuredImage?.node?.remoteFile?.childImageSharp && (
+      {
+        author.node && author.node.avatarImg &&
+        (
+          <Img fluid={author.node.avatarImg.childImageSharp.tiny} />
+        )
+      }
+      {!!featuredImage?.node?.localFile?.childImageSharp && (
         <Box mb={5}>
-          <Img fluid={featuredImage.node.remoteFile.childImageSharp.fluid} />
+          <Img fluid={featuredImage.node.localFile.childImageSharp.fluid} />
         </Box>
       )}
 
       <p dangerouslySetInnerHTML={{ __html: content }} />
-
+      <br/>
+      {author.node.name}<br/>
+      {author.node.slug}
+      <p dangerouslySetInnerHTML={{ __html: author.node.description }} />
       <br />
       {!!nextPage && (
         <Link to={normalizePath(nextPage.uri)}>Next: {nextPage.title}</Link>
